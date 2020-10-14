@@ -1,33 +1,39 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import redis
-import os
+import json
+from datetime import datetime
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 CORS(app)
 
-@app.route("/")
-def hello():                           
-    return "<h1>Hello Heroku 와 이게 되네?</h1>"
+@app.route('/')
+def index():
+    conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
+  # conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결
+    print ('Set Record:', conn.set("hello_redis", "헬로우 Redis"))
+    ret_str = conn.get("hello_redis")
+    return ret_str
 
-@app.route("/hello")
-def hello_flask():
-    return "<h1>Hello Flash!</h1>"
+@app.route('/list')
+def get_list():
+    conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
+  # conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
+    redis_key = "my_sp_list_"+datetime.today().strftime('%Y%m%d')
+    redis_data = conn.get(redis_key)
+    res = dict(json.loads(redis_data))  
+    return jsonify(res)
 
-@app.route("/first")
-def hello_first():
-    return "<h3>Hello First</h3>"
+@app.route('/save', methods=['POST'])
+def save_list():
+    req_data = request.get_json()
+    conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
+  # conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
+    redis_key = "my_sp_list_"+datetime.today().strftime('%Y%m%d')
+    json_data = json.dumps(req_data)
+    conn.set(redis_key, json_data)
+    return jsonify(json_data)
 
-@app.route("/redis")
-def hello_redis():
-
-    # 레디스 연결
-    # rd = redis.StrictRedis(host='localhost', port=6379, db=0) # redis 로컬
-    rd = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결
-    rd.set("hello", "헬로우 레디스")
-    ret = rd.get("hello")
-
-    return ret
-
-if __name__ == "__main__":              
-    app.run(host="0.0.0.0", port="8080")
+if __name__ == '__main__':
+    app.run(debug=True, port=4000)    
