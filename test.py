@@ -56,9 +56,9 @@ def get_value():
 @app.route('/getKeys', methods=['GET','POST'])
 def get_keys():
     #conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
-    conn = redis.from_url(os.environ['REDISCLOUD_URL'], decode_responses=True) # redis heroku addon 연결    
-    redis_data = conn.keys('*') 
-    
+    conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
+    redis_data = conn.keys()
+
     print("getKeys 조회결과:" + str(redis_data))
 
     return jsonify(redis_data)
