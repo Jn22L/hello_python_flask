@@ -29,16 +29,16 @@ def get_list():
 # 1개 value 조회
 @app.route('/getValue', methods=['GET','POST'])
 def get_value():
-    params = request.get_data()
-    if len(params) == 0:
-        return 'No parameter'
+    params = request.get_data().decode('utf-8')
+    #if len(params) == 0:
+    #    return 'No parameter'
 
     print('클라이언트에서 받은것(getValue)' + str(params))  
 
     conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
   #  conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
-    redis_key = "my_sp_list_"+datetime.today().strftime('%Y%m%d')
-    redis_data = conn.get(redis_key)
+   # redis_key = "my_sp_list_"+datetime.today().strftime('%Y%m%d')
+    redis_data = conn.get(params)
     res = dict(json.loads(redis_data))  
     print("머야(getValue):" + str(res))
     return jsonify(res) 
