@@ -1,4 +1,4 @@
 # python flask 로 만들어본 간단한 웹서버
-* client : React
-* DB : redis
+* Language : Python3 
 * Hosting : heroku 
+* DB : redis
