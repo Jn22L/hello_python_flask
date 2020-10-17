@@ -20,8 +20,8 @@ def index():
 def save_list():
     req_data = request.get_json()
     print(req_data)
-    conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
-    #conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
+    #conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
+    conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
     redis_key = "my_sp_list_"+datetime.today().strftime('%Y%m%d-%H:%M:%S')
     if req_data:
       json_data = json.dumps(req_data)
@@ -33,8 +33,8 @@ def save_list():
 # 모든 key 목록 조회
 @app.route('/getKeys', methods=['GET','POST'])
 def get_keys():
-    conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
-    #conn = redis.from_url(os.environ['REDISCLOUD_URL'], decode_responses=True) # redis heroku addon 연결    
+    #conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
+    conn = redis.from_url(os.environ['REDISCLOUD_URL'], decode_responses=True) # redis heroku addon 연결    
     redis_data = conn.keys('*') 
     
     print("getKeys 조회결과:" + str(redis_data))
@@ -54,8 +54,8 @@ def get_value():
 
     print('getValue 수신 파라메터:' + str(params))  
 
-    conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
-    #conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
+    #conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
+    conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
     redis_data = conn.get(redis_key)
     res = dict(json.loads(redis_data)) 
 
@@ -76,8 +76,8 @@ def del_key():
 
     print('delKey 수신 파라메터:' + str(params))  
 
-    conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
-    #conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
+    #conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
+    conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
     conn.delete(redis_key)
 
     return jsonify(redis_key) 
