@@ -12,8 +12,9 @@ CORS(app)
 @app.route('/')
 def index():
     #conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
-    conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결
-    ret_str = conn.get("hello_redis")
+    #conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결
+    #ret_str = conn.get("hello_redis")
+    ret_str = "<h1>Welcome to my universe! 환영합니당! ^^</h1>"
     return ret_str
 
 @app.route('/save', methods=['GET','POST'])
@@ -33,8 +34,8 @@ def save_list():
 # 모든 key 목록 조회
 @app.route('/getKeys', methods=['GET','POST'])
 def get_keys():
-    conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
-    #conn = redis.from_url(os.environ['REDISCLOUD_URL'], decode_responses=True) # redis heroku addon 연결    
+    #conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
+    conn = redis.from_url(os.environ['REDISCLOUD_URL'], decode_responses=True) # redis heroku addon 연결    
     redis_data = conn.keys('*')
     redis_data_sort = list(reversed(sorted(redis_data)))
 
