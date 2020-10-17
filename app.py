@@ -33,13 +33,14 @@ def save_list():
 # 모든 key 목록 조회
 @app.route('/getKeys', methods=['GET','POST'])
 def get_keys():
-    #conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
-    conn = redis.from_url(os.environ['REDISCLOUD_URL'], decode_responses=True) # redis heroku addon 연결    
-    redis_data = conn.keys('*') 
-    
-    print("getKeys 조회결과:" + str(redis_data))
+    conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
+    #conn = redis.from_url(os.environ['REDISCLOUD_URL'], decode_responses=True) # redis heroku addon 연결    
+    redis_data = conn.keys('*')
+    redis_data_sort = list(reversed(sorted(redis_data)))
 
-    return jsonify(redis_data)
+    print("getKeys 조회결과 redis_data_sort:" + str(redis_data_sort))
+
+    return jsonify(redis_data_sort)
 
 # 1개 value 조회
 @app.route('/getValue', methods=['GET','POST'])
