@@ -21,13 +21,17 @@ def index():
 def save_list():
     req_data = request.get_json()
     print(req_data)
+    print('save 첫번째 name :' + str(req_data['information'][0]['name']))
     #conn = redis.StrictRedis(host='localhost', port=6379, db=0, charset="utf-8", decode_responses=True) #Redis 연결
     conn = redis.from_url(os.environ['REDISCLOUD_URL']) # redis heroku addon 연결    
-    redis_key = "my_sp_list_"+datetime.today().strftime('%Y%m%d-%H:%M:%S')
+    #redis_key = "my_sp_list_"+datetime.today().strftime('%Y%m%d-%H:%M:%S')
+    redis_key = "my_sp_list_"+datetime.today().strftime('%Y%m%d-%H:%M:%S')+str(req_data['information'][0]['name'])
     if req_data:
       json_data = json.dumps(req_data)
     else :
       json_data = '{"json":"null"}'
+    
+   
     conn.set(redis_key, json_data)
     return jsonify(json_data)
 
